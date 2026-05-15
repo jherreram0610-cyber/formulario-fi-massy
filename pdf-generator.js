@@ -87,6 +87,7 @@ async function fillOriginalPDF(){
     setChk('Nuevo', tc === 'Nuevo');
     setChk('Usado', tc === 'Usado');
     setChk('Leasing', tc === 'Leasing');
+    setChk('Credito', tc === 'Nuevo' || tc === 'Usado'); // checkbox general crédito
 
     const uv = getPill('usoVehiculo');
     setChk('Particular', uv === 'Particular');
@@ -182,10 +183,15 @@ async function fillOriginalPDF(){
     setTxt('comisiones', gv('comisionesDeudor'));
     setTxt('arriendos', gv('arriendosDeudor'));
     setTxt('otros', gv('otrosIngDeudor'));
+    setTxt('descripcion otros ingresos', gv('descOtrosIng'));
     
-    // Suma de Total Ingresos y mapeo en ambos campos que tiene el PDF
+    // Total Ingresos — el PDF tiene dos campos para el mismo valor
     setTxt('total ingresos', gv('totalIngDeudor'));
     setTxt('total ingreso', gv('totalIngDeudor'));
+
+    // --- SARLAFT — campos operaciones moneda extranjera ---
+    setTxt('tipo de producto', gv('tipoOpMoneda'));
+    setTxt('numero producto', gv('numMoneda'));
 
     // --- Referencias ---
     setTxt('Nombre referencia 1', gv('refPNombre1'));
