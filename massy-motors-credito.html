@@ -90,6 +90,19 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
   .btn-row{flex-direction:column}
   .btn{width:100%;text-align:center}
 }
+
+/* VALIDATION ERRORS */
+input.field-error,select.field-error,textarea.field-error{
+  border-color:#C8102E!important;
+  box-shadow:0 0 0 3px rgba(200,16,46,.2)!important;
+  background:rgba(200,16,46,.03)!important;
+}
+.pill-group-error{
+  outline:2px solid #C8102E;
+  outline-offset:4px;
+  border-radius:24px;
+}
+.req-star{color:#C8102E;font-size:11px;margin-left:3px;vertical-align:middle;}
 </style>
 </head>
 <body>
@@ -475,8 +488,86 @@ function goTo(n){
   steps[current].classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function nextPanel(){goTo(current+1)}
-function prevPanel(){goTo(current-1)}
+function nextPanel(){
+  var result = validateStep(current);
+  if(!result.valid){ showValidationToast(result.errors); return; }
+  clearValidationErrors();
+  goTo(current+1);
+}
+function prevPanel(){ clearValidationErrors(); goTo(current-1); }
+
+/* ===== VALIDATION ===== */
+function chkField(id, label, errors){
+  var el=document.getElementById(id); if(!el) return;
+  var val=el.value.trim();
+  if(!val){ errors.push(label); el.classList.add('field-error'); }
+  else el.classList.remove('field-error');
+}
+function chkPill(cid, label, errors){
+  var c=document.getElementById(cid); if(!c) return;
+  var sel=c.querySelector('.pill.selected');
+  if(!sel){ errors.push(label); c.classList.add('pill-group-error'); }
+  else c.classList.remove('pill-group-error');
+}
+function validateStep(n){
+  var errors=[];
+  if(n===0){
+    chkField('fecha','Fecha',errors);
+    chkField('concesionario','Concesionario',errors);
+    chkField('asesor','Asesor',errors);
+    chkField('cedulaAsesor','Cédula Asesor',errors);
+    chkPill('tipoCredito','Tipo de Crédito',errors);
+    chkField('refVehiculo','Referencia del Vehículo',errors);
+    chkField('modeloAno','Modelo / Año',errors);
+    chkPill('usoVehiculo','Uso del Vehículo',errors);
+    chkField('valorVehiculo','Valor del Vehículo',errors);
+  }
+  if(n===1){
+    chkField('nombreSolicitante','Nombre Completo',errors);
+    chkPill('tipoDocSol','Tipo de Documento',errors);
+    chkField('numDocSol','No. Documento',errors);
+    chkField('fecNacSol','Fecha de Nacimiento',errors);
+    chkField('fecExpSol','Fecha de Expedición',errors);
+    chkPill('estadoCivil','Estado Civil',errors);
+    chkField('personasCargo','Personas a Cargo',errors);
+    chkField('dirResidencia','Dirección de Residencia',errors);
+    chkField('barrio','Barrio',errors);
+    chkField('ciudad','Ciudad',errors);
+    chkPill('tipoVivienda','Tipo de Vivienda',errors);
+    chkField('celularSol','Celular',errors);
+    chkField('emailSol','Email',errors);
+  }
+  if(n===3){
+    chkPill('tipoVinculacion','Tipo de Vinculación',errors);
+    chkField('antiguedad','Antigüedad',errors);
+    chkField('nombreEmpresa','Nombre Empresa',errors);
+    chkField('cargo','Cargo',errors);
+  }
+  if(n===4){
+    chkField('salarioDeudor','Salario (Ingresos Mensuales)',errors);
+    chkPill('sarlaftExpuesto','¿Expuesto públicamente?',errors);
+    chkPill('sarlaftDineros','¿Maneja dineros públicos?',errors);
+    chkPill('sarlaftMoneda','¿Operaciones moneda extranjera?',errors);
+  }
+  return {valid: errors.length===0, errors: errors};
+}
+function showValidationToast(errors){
+  var ex=document.getElementById('val-toast'); if(ex) ex.remove();
+  var d=document.createElement('div');
+  d.id='val-toast';
+  d.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#C8102E;color:#fff;padding:14px 22px;border-radius:10px;font-family:Barlow,sans-serif;font-size:13px;z-index:99999;box-shadow:0 6px 20px rgba(0,0,0,.3);max-width:92vw;text-align:center;line-height:1.6;';
+  var lista = errors.slice(0,6).map(function(e){return '• '+e;}).join('<br>');
+  d.innerHTML='<strong>⚠️ Campos obligatorios incompletos:</strong><br>'+lista+(errors.length>6?'<br>…y '+(errors.length-6)+' más':'');
+  document.body.appendChild(d);
+  setTimeout(function(){if(d.parentNode)d.remove();},5000);
+  var first=document.querySelector('.field-error,.pill-group-error');
+  if(first) first.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function clearValidationErrors(){
+  document.querySelectorAll('.field-error').forEach(function(el){el.classList.remove('field-error');});
+  document.querySelectorAll('.pill-group-error').forEach(function(el){el.classList.remove('pill-group-error');});
+  var t=document.getElementById('val-toast'); if(t) t.remove();
+}
 
 /* ===== PILLS ===== */
 function selectedRadio(el){
