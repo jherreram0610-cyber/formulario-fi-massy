@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitud de Crédito — Massy Motors</title>
+<meta name="description" content="Formulario digital de solicitud de crédito persona natural — Massy Motors Gerencia de Negocios">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#ffffff;--card:#f8f8f8;--input-bg:#fff;--border:#ddd;--red:#C8102E;--red-dark:#9a0c22;--gold:#8B6914;--text:#222;--text-dim:#555;--radius:8px;--transition:0.3s ease}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+h1,h2,h3,h4{font-family:'Barlow Condensed',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+
+/* HEADER */
+.site-header{background:#fff;border-bottom:2px solid #eee;padding:16px 24px;text-align:center}
+.site-header .logo-img{height:50px;margin-bottom:6px}
+.site-header .brands{font-size:11px;letter-spacing:4px;color:var(--text-dim);margin-top:4px;text-transform:uppercase}
+.site-header .form-title{font-size:13px;color:var(--text-dim);margin-top:8px;letter-spacing:2px;font-weight:500}
+
+/* PROGRESS BAR */
+.progress-bar{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--border);padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.progress-bar::-webkit-scrollbar{height:0}
+.progress-steps{display:flex;justify-content:center;gap:4px;min-width:max-content;margin:0 auto}
+.p-step{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;cursor:pointer;transition:var(--transition);white-space:nowrap;font-size:12px;color:var(--text-dim);border:1px solid transparent}
+.p-step .num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;background:#eee;color:var(--text-dim);transition:var(--transition)}
+.p-step.active{color:#000;border-color:var(--red)}
+.p-step.active .num{background:var(--red);color:#fff}
+.p-step.done .num{background:#1a7a3a;color:#fff}
+.p-step.done{color:#666}
+
+/* CONTAINER */
+.container{max-width:900px;margin:0 auto;padding:24px 16px 100px}
+
+/* PANELS */
+.panel{display:none;animation:fadeIn .4s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION TITLES */
+.section-title{font-size:22px;color:var(--red);margin-bottom:20px;padding-bottom:8px;border-bottom:2px solid var(--red)}
+.sub-title{font-size:16px;color:var(--gold);margin:24px 0 12px;padding-bottom:4px;border-bottom:1px solid #ddd}
+
+/* FORM GRID */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:16px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+
+/* INPUTS */
+input,select,textarea{background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:var(--radius);font-family:'Barlow',sans-serif;font-size:14px;transition:var(--transition);width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 2px rgba(200,16,46,.2)}
+input[readonly]{background:#f5f5f5;color:var(--red);font-weight:600}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+
+/* PILLS (radio/check) */
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{padding:8px 16px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:13px;transition:var(--transition);user-select:none}
+.pill:hover{border-color:#999}
+.pill.selected{border-color:var(--red);background:rgba(200,16,46,.08);color:var(--red);font-weight:600}
+.pill-check.selected{border-color:var(--gold);background:rgba(139,105,20,.08);color:var(--gold)}
+
+/* BUTTONS */
+.btn-row{display:flex;justify-content:space-between;margin-top:32px;gap:12px}
+.btn{padding:12px 32px;border:none;border-radius:var(--radius);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:var(--transition)}
+.btn-prev{background:transparent;border:1px solid #ccc;color:#666}
+.btn-prev:hover{border-color:#999;color:#222}
+.btn-next{background:var(--red);color:#fff}
+.btn-next:hover{background:var(--red-dark)}
+.btn-submit{background:#1a7a3a;color:#fff;font-size:16px;padding:14px 40px}
+.btn-submit:hover{background:#15612e}
+
+/* NOTE */
+.note{font-size:12px;color:var(--text-dim);font-style:italic;margin-bottom:16px}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-box{background:#fff;border:1px solid var(--border);border-radius:12px;padding:40px;text-align:center;max-width:420px;width:90%;animation:fadeIn .3s ease;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal-box .icon{font-size:48px;margin-bottom:16px}
+.modal-box h3{font-size:22px;color:#222;margin-bottom:8px}
+.modal-box p{color:var(--text-dim);font-size:14px;margin-bottom:24px}
+.modal-box .btn{width:100%}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .form-grid{grid-template-columns:1fr}
+  .progress-steps{justify-content:flex-start}
+  .p-step .lbl{display:none}
+  .btn-row{flex-direction:column}
+  .btn{width:100%;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <img src="logo-massy-motors.png" alt="Massy Motors" class="logo-img">
+  <div class="brands">KIA · MAZDA · MERCEDES-BENZ · SMART · GEELY</div>
+  <div class="form-title">Solicitud de Crédito Persona Natural — Gerencia de Negocios</div>
+</header>
+
+<!-- PROGRESS BAR -->
+<nav class="progress-bar">
+  <div class="progress-steps">
+    <div class="p-step active" onclick="goTo(0)"><span class="num">1</span><span class="lbl">Vehículo</span></div>
+    <div class="p-step" onclick="goTo(1)"><span class="num">2</span><span class="lbl">Solicitante</span></div>
+    <div class="p-step" onclick="goTo(2)"><span class="num">3</span><span class="lbl">Cónyuge</span></div>
+    <div class="p-step" onclick="goTo(3)"><span class="num">4</span><span class="lbl">Laboral</span></div>
+    <div class="p-step" onclick="goTo(4)"><span class="num">5</span><span class="lbl">Financiero</span></div>
+    <div class="p-step" onclick="goTo(5)"><span class="num">6</span><span class="lbl">Patrimonio</span></div>
+    <div class="p-step" onclick="goTo(6)"><span class="num">7</span><span class="lbl">Referencias</span></div>
+    <div class="p-step" onclick="goTo(7)"><span class="num">8</span><span class="lbl">Firma</span></div>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ==================== PASO 1 ==================== -->
+<div class="panel active" id="panel-0">
+  <h2 class="section-title">Paso 1 — Datos del Vehículo</h2>
+  <div class="form-grid">
+    <div class="form-group"><label>Fecha</label><input type="date" id="fecha"></div>
+    <div class="form-group"><label>Concesionario</label>
+      <select id="concesionario">
+        <option value="">Seleccione...</option>
+        <option>Massy Motors KIA Sede Norte</option>
+        <option>Massy Motors KIA Sede Sur</option>
+        <option>Mazko Mazda Sede Norte</option>
+        <option>Mazko Mazda Sede Sur</option>
+        <option>Massy Motors Premium Mercedes-Benz</option>
+        <option>Massy Motors Usados Sede Norte</option>
+        <option>Massy Motors Usados Sede Sur</option>
+      </select>
+    </div>
+    <div class="form-group"><label>No. de Solicitud</label><input type="text" id="noSolicitud"></div>
+    <div class="form-group"><label>Asesor</label><input type="text" id="asesor"></div>
+    <div class="form-group"><label>Cédula Asesor</label><input type="text" id="cedulaAsesor"></div>
+  </div>
+
+  <div class="sub-title">Tipo de Crédito</div>
+  <div class="pills" id="tipoCredito">
+    <div class="pill" onclick="selectedRadio(this)">Nuevo</div>
+    <div class="pill" onclick="selectedRadio(this)">Usado</div>
+    <div class="pill" onclick="selectedRadio(this)">Leasing</div>
+  </div>
+
+  <div class="form-grid" style="margin-top:20px">
+    <div class="form-group"><label>Referencia del Vehículo</label><input type="text" id="refVehiculo"></div>
+    <div class="form-group"><label>Modelo / Año</label><input type="text" id="modeloAno"></div>
+  </div>
+
+  <div class="sub-title">Uso del Vehículo</div>
+  <div class="pills" id="usoVehiculo">
+    <div class="pill" onclick="selectedRadio(this)">Particular</div>
+    <div class="pill" onclick="selectedRadio(this)">Público</div>
+  </div>
+
+  <div class="form-grid" style="margin-top:20px">
+    <div class="form-group"><label>Valor del Vehículo ($)</label><input type="number" id="valorVehiculo" oninput="calcFinanciar()"></div>
+    <div class="form-group"><label>Cuota Inicial ($)</label><input type="number" id="cuotaInicial" oninput="calcFinanciar()"></div>
+    <div class="form-group"><label>Valor a Financiar ($)</label><input type="text" id="valorFinanciar" readonly></div>
+  </div>
+
+  <div class="btn-row"><div></div><button class="btn btn-next" onclick="nextPanel()">Continuar →</button></div>
+</div>
+
+<!-- ==================== PASO 2 ==================== -->
+<div class="panel" id="panel-1">
+  <h2 class="section-title">Paso 2 — Datos del Solicitante</h2>
+  <div class="form-grid">
+    <div class="form-group full"><label>Nombre Completo *</label><input type="text" id="nombreSolicitante" required></div>
+  </div>
+  <div class="sub-title">Tipo de Documento</div>
+  <div class="pills" id="tipoDocSol">
+    <div class="pill" onclick="selectedRadio(this)">C.C.</div>
+    <div class="pill" onclick="selectedRadio(this)">C.E.</div>
+    <div class="pill" onclick="selectedRadio(this)">PAS</div>
+  </div>
+  <div class="form-grid" style="margin-top:16px">
+    <div class="form-group"><label>No. Documento</label><input type="text" id="numDocSol"></div>
+    <div class="form-group"><label>Fecha de Nacimiento</label><input type="date" id="fecNacSol"></div>
+    <div class="form-group"><label>Fecha de Expedición</label><input type="date" id="fecExpSol"></div>
+  </div>
+  <div class="sub-title">Estado Civil</div>
+  <div class="pills" id="estadoCivil">
+    <div class="pill" onclick="selectedRadio(this)">Soltero</div>
+    <div class="pill" onclick="selectedRadio(this)">Casado</div>
+    <div class="pill" onclick="selectedRadio(this)">U. Libre</div>
+    <div class="pill" onclick="selectedRadio(this)">Viudo</div>
+  </div>
+  <div class="form-grid" style="margin-top:16px">
+    <div class="form-group"><label>Personas a Cargo</label><input type="number" id="personasCargo" min="0"></div>
+    <div class="form-group full"><label>Dirección de Residencia</label><input type="text" id="dirResidencia"></div>
+    <div class="form-group"><label>Barrio</label><input type="text" id="barrio"></div>
+    <div class="form-group"><label>Ciudad</label><input type="text" id="ciudad"></div>
+  </div>
+  <div class="sub-title">Tipo de Vivienda</div>
+  <div class="pills" id="tipoVivienda">
+    <div class="pill" onclick="selectedRadio(this)">Propia</div>
+    <div class="pill" onclick="selectedRadio(this)">Familiar</div>
+    <div class="pill" onclick="selectedRadio(this)">Alquilada</div>
+  </div>
+  <div class="form-grid" style="margin-top:16px">
+    <div class="form-group"><label>Celular *</label><input type="tel" id="celularSol" required></div>
+    <div class="form-group"><label>Email *</label><input type="email" id="emailSol" required></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
+    <button class="btn btn-next" onclick="nextPanel()">Continuar →</button>
+  </div>
+</div>
+
+<!-- ==================== PASO 3 ==================== -->
+<div class="panel" id="panel-2">
+  <h2 class="section-title">Paso 3 — Datos del Cónyuge</h2>
+  <p class="note">Diligencie si aplica. Puede omitir este paso si no tiene cónyuge.</p>
+  <div class="form-grid">
+    <div class="form-group full"><label>Nombre Completo</label><input type="text" id="nombreConyuge"></div>
+  </div>
+  <div class="sub-title">Tipo de Documento</div>
+  <div class="pills" id="tipoDocCon">
+    <div class="pill" onclick="selectedRadio(this)">C.C.</div>
+    <div class="pill" onclick="selectedRadio(this)">C.E.</div>
+    <div class="pill" onclick="selectedRadio(this)">PAS</div>
+  </div>
+  <div class="form-grid" style="margin-top:16px">
+    <div class="form-group"><label>No. Documento</label><input type="text" id="numDocCon"></div>
+    <div class="form-group"><label>Fecha de Nacimiento</label><input type="date" id="fecNacCon"></div>
+    <div class="form-group"><label>Fecha de Expedición</label><input type="date" id="fecExpCon"></div>
+    <div class="form-group"><label>Celular</label><input type="tel" id="celConyuge"></div>
+    <div class="form-group"><label>Email</label><input type="email" id="emailConyuge"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
+    <button class="btn btn-next" onclick="nextPanel()">Continuar →</button>
+  </div>
+</div>
+
+<!-- PANELS 3-7 will be added next -->
+<div class="panel" id="panel-3">
+  <h2 class="section-title">Paso 4 — Información Laboral</h2>
+  <div class="sub-title">Tipo de Vinculación</div>
+  <div class="pills" id="tipoVinculacion">
+    <div class="pill" onclick="selectedRadio(this)">Independiente</div>
+    <div class="pill" onclick="selectedRadio(this)">Asalariado</div>
+    <div class="pill" onclick="selectedRadio(this)">Rentista de Capital</div>
+    <div class="pill" onclick="selectedRadio(this)">Pensionado</div>
+  </div>
+  <div class="form-grid" style="margin-top:16px">
+    <div class="form-group"><label>Antigüedad</label><input type="text" id="antiguedad"></div>
+    <div class="form-group"><label>Nombre Empresa *</label><input type="text" id="nombreEmpresa" required></div>
+    <div class="form-group"><label>Cargo *</label><input type="text" id="cargo" required></div>
+    <div class="form-group"><label>Profesión</label><input type="text" id="profesion"></div>
+    <div class="form-group"><label>Tipo de Contrato</label>
+      <select id="tipoContrato">
+        <option value="">Seleccione...</option>
+        <option>Término Indefinido</option>
+        <option>Término Fijo</option>
+        <option>Prestación de Servicios</option>
+        <option>Obra o Labor</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Actividad Económica</label><input type="text" id="actEconomica"><small style="font-size:10px;color:#999;margin-top:2px">* Aplica solo si es Independiente o Profesional Independiente</small></div>
+  </div>
+  <div class="pills" style="margin:12px 0">
+    <div class="pill pill-check" onclick="toggleCheck(this)">📄 Cámara de Comercio</div>
+    <div class="pill pill-check" onclick="toggleCheck(this)">📋 RUT</div>
+  </div>
+  <small style="font-size:10px;color:#999;display:block;margin-top:-8px;margin-bottom:12px">* Cámara de Comercio y RUT aplican solo si es Independiente o Profesional Independiente</small>
+  <div class="form-grid">
+    <div class="form-group full"><label>Dirección Empresa</label><input type="text" id="dirEmpresa"></div>
+    <div class="form-group"><label>Teléfono Empresa</label><input type="tel" id="telEmpresa"></div>
+    <div class="form-group"><label>Ciudad</label><input type="text" id="ciudadEmpresa"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
+    <button class="btn btn-next" onclick="nextPanel()">Continuar →</button>
+  </div>
+</div>
+<div class="panel" id="panel-4">
+  <h2 class="section-title">Paso 5 — Información Financiera</h2>
+  <style>.fin-table{width:100%;border-collapse:collapse;margin-bottom:16px}.fin-table th,.fin-table td{padding:8px 10px;border:1px solid #ddd;font-size:13px}.fin-table th{background:#f5f5f5;color:#222;text-transform:uppercase;font-size:11px;letter-spacing:.5px;font-weight:600}.fin-table tr:nth-child(even) td{background:#fafafa}.fin-table tr:last-child td{background:rgba(200,16,46,.06);font-weight:600}.fin-table input{width:100%;background:#fff;border:1px solid #ddd;color:#222;padding:6px 8px;border-radius:4px;font-size:13px}.fin-table input:focus{border-color:var(--red);outline:none}.fin-table input[readonly]{color:var(--red);background:#f5f5f5}</style>
+
+  <div class="sub-title">Ingresos Mensuales</div>
+  <div style="overflow-x:auto">
+  <table class="fin-table">
+    <tr><th>Concepto</th><th>Deudor</th><th>Cónyuge</th></tr>
+    <tr><td>Salario</td><td><input type="number" id="salarioDeudor" oninput="calcTotales()"></td><td><input type="number" id="salarioConyuge" oninput="calcTotales()"></td></tr>
+    <tr><td>Comisiones</td><td><input type="number" id="comisionesDeudor" oninput="calcTotales()"></td><td><input type="number" id="comisionesConyuge" oninput="calcTotales()"></td></tr>
+    <tr><td>Arriendos</td><td><input type="number" id="arriendosDeudor" oninput="calcTotales()"></td><td><input type="number" id="arriendosConyuge" oninput="calcTotales()"></td></tr>
+    <tr><td>Otros</td><td><input type="number" id="otrosIngDeudor" oninput="calcTotales()"></td><td><input type="number" id="otrosIngConyuge" oninput="calcTotales()"></td></tr>
+    <tr><td><strong>TOTAL INGRESOS</strong></td><td><input type="text" id="totalIngDeudor" readonly></td><td><input type="text" id="totalIngConyuge" readonly></td></tr>
+  </table>
+  </div>
+
+
+
+  <div class="form-grid">
+    <div class="form-group full"><label>Descripción Otros Ingresos</label><input type="text" id="descOtrosIng"></div>
+  </div>
+
+  <div class="sub-title">Preguntas SARLAFT</div>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <span style="font-size:13px">¿Por su labor está públicamente expuesto?</span>
+      <div class="pills" id="sarlaftExpuesto"><div class="pill" onclick="selectedRadio(this)">Sí</div><div class="pill" onclick="selectedRadio(this)">No</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <span style="font-size:13px">¿Maneja dineros públicos?</span>
+      <div class="pills" id="sarlaftDineros"><div class="pill" onclick="selectedRadio(this)">Sí</div><div class="pill" onclick="selectedRadio(this)">No</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <span style="font-size:13px">¿Realiza operaciones en moneda extranjera?</span>
+      <div class="pills" id="sarlaftMoneda"><div class="pill" onclick="selectedRadio(this)">Sí</div><div class="pill" onclick="selectedRadio(this)">No</div></div>
+    </div>
+  </div>
+  <div class="form-grid">
+    <div class="form-group"><label>Tipo Operación (si aplica)</label><input type="text" id="tipoOpMoneda"></div>
+    <div class="form-group"><label>Producto</label><input type="text" id="productoMoneda"></div>
+    <div class="form-group"><label>Número</label><input type="text" id="numMoneda"></div>
+  </div>
+
+  <div class="sub-title">Origen de Fondos</div>
+  <div class="pills" style="margin-bottom:12px">
+    <div class="pill pill-check" onclick="toggleCheck(this)">Salario</div>
+    <div class="pill pill-check" onclick="toggleCheck(this)">Honorarios</div>
+    <div class="pill pill-check" onclick="toggleCheck(this)">Arrendamientos</div>
+    <div class="pill pill-check" onclick="toggleCheck(this)">Comisiones</div>
+    <div class="pill pill-check" onclick="toggleCheck(this)">Herencia</div>
+    <div class="pill pill-check" onclick="toggleCheck(this)">Rendimientos Financieros</div>
+    <div class="pill pill-check" onclick="toggleCheck(this)">Venta Propiedad</div>
+    <div class="pill pill-check" onclick="toggleCheck(this)">Pensión Laboral</div>
+    <div class="pill pill-check" onclick="toggleCheck(this)">Otros</div>
+  </div>
+  <div class="form-grid">
+    <div class="form-group full"><label>Detalle Otros</label><input type="text" id="detalleOtrosFondos"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
+    <button class="btn btn-next" onclick="nextPanel()">Continuar →</button>
+  </div>
+</div>
+<div class="panel" id="panel-5">
+  <h2 class="section-title">Paso 6 — Patrimonio Demostrado</h2>
+  <div class="sub-title">Inmuebles</div>
+  <div style="overflow-x:auto"><table class="fin-table">
+    <tr><th>Tipo</th><th>Dirección</th><th>Valor Comercial ($)</th><th>Entidad</th></tr>
+    <tr>
+      <td><div class="pills" id="tipoInmueble1" style="gap:4px"><div class="pill" style="padding:4px 10px;font-size:11px" onclick="selectedRadio(this)">Casa</div><div class="pill" style="padding:4px 10px;font-size:11px" onclick="selectedRadio(this)">Apto</div><div class="pill" style="padding:4px 10px;font-size:11px" onclick="selectedRadio(this)">Otro</div></div></td>
+      <td><input type="text" id="dirInmueble1"></td><td><input type="number" id="valInmueble1"></td><td><input type="text" id="entInmueble1"></td>
+    </tr>
+    <tr>
+      <td><div class="pills" id="tipoInmueble2" style="gap:4px"><div class="pill" style="padding:4px 10px;font-size:11px" onclick="selectedRadio(this)">Casa</div><div class="pill" style="padding:4px 10px;font-size:11px" onclick="selectedRadio(this)">Apto</div><div class="pill" style="padding:4px 10px;font-size:11px" onclick="selectedRadio(this)">Otro</div></div></td>
+      <td><input type="text" id="dirInmueble2"></td><td><input type="number" id="valInmueble2"></td><td><input type="text" id="entInmueble2"></td>
+    </tr>
+  </table></div>
+
+  <div class="sub-title">Vehículos en Garantía</div>
+  <div style="overflow-x:auto"><table class="fin-table">
+    <tr><th>Referencia</th><th>Modelo (Año)</th><th>Placa</th><th>Valor Comercial ($)</th></tr>
+    <tr><td><input type="text" id="refVeh1"></td><td><input type="text" id="modVeh1"></td><td><input type="text" id="plaVeh1"></td><td><input type="number" id="valVeh1"></td></tr>
+    <tr><td><input type="text" id="refVeh2"></td><td><input type="text" id="modVeh2"></td><td><input type="text" id="plaVeh2"></td><td><input type="number" id="valVeh2"></td></tr>
+  </table></div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
+    <button class="btn btn-next" onclick="nextPanel()">Continuar →</button>
+  </div>
+</div>
+<div class="panel" id="panel-6">
+  <h2 class="section-title">Paso 7 — Referencias</h2>
+  <div class="sub-title">Referencias Personales / Familiares</div>
+  <p class="note">Referencia 1</p>
+  <div class="form-grid">
+    <div class="form-group"><label>Nombre</label><input type="text" id="refPNombre1"></div>
+    <div class="form-group"><label>Celular</label><input type="tel" id="refPCel1"></div>
+    <div class="form-group"><label>Parentesco</label><input type="text" id="refPPar1"></div>
+  </div>
+  <p class="note" style="margin-top:16px">Referencia 2</p>
+  <div class="form-grid">
+    <div class="form-group"><label>Nombre</label><input type="text" id="refPNombre2"></div>
+    <div class="form-group"><label>Celular</label><input type="tel" id="refPCel2"></div>
+    <div class="form-group"><label>Parentesco</label><input type="text" id="refPPar2"></div>
+  </div>
+
+  <div class="sub-title">Referencias Comerciales</div>
+  <p class="note">Referencia 1</p>
+  <div class="form-grid">
+    <div class="form-group"><label>Nombre</label><input type="text" id="refCNombre1"></div>
+    <div class="form-group"><label>NIT</label><input type="text" id="refCNit1"></div>
+    <div class="form-group"><label>Celular</label><input type="tel" id="refCCel1"></div>
+    <div class="form-group"><label>Antigüedad</label><input type="text" id="refCAnt1"></div>
+  </div>
+  <p class="note" style="margin-top:16px">Referencia 2</p>
+  <div class="form-grid">
+    <div class="form-group"><label>Nombre</label><input type="text" id="refCNombre2"></div>
+    <div class="form-group"><label>NIT</label><input type="text" id="refCNit2"></div>
+    <div class="form-group"><label>Celular</label><input type="tel" id="refCCel2"></div>
+    <div class="form-group"><label>Antigüedad</label><input type="text" id="refCAnt2"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
+    <button class="btn btn-next" onclick="nextPanel()">Continuar →</button>
+  </div>
+</div>
+<div class="panel" id="panel-7">
+  <h2 class="section-title">Paso 8 — Autorización y Firma</h2>
+  <style>.auth-box{background:#f9f9f9;border:1px solid var(--border);border-radius:var(--radius);padding:16px;max-height:200px;overflow-y:auto;font-size:12px;line-height:1.7;color:#444;margin-bottom:20px}.sig-area{margin-bottom:20px}.sig-area h4{font-size:14px;color:var(--text);margin-bottom:8px}.sig-canvas{width:100%;height:160px;background:#fafafa;border:2px dashed #ccc;border-radius:var(--radius);cursor:crosshair;touch-action:none;position:relative}.sig-placeholder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#bbb;font-size:14px;pointer-events:none}.sig-wrap{position:relative}.btn-clear{background:transparent;border:1px solid #ccc;color:#888;padding:6px 16px;border-radius:var(--radius);font-size:12px;cursor:pointer;margin-top:6px;font-family:'Barlow',sans-serif}.btn-clear:hover{border-color:var(--red);color:var(--red)}.accept-row{display:flex;align-items:flex-start;gap:12px;margin:20px 0;padding:16px;background:#f9f9f9;border-radius:var(--radius);border:1px solid var(--border)}.accept-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--red);flex-shrink:0;margin-top:2px}.accept-row label{font-size:13px;color:var(--text);cursor:pointer}</style>
+
+  <div class="sub-title">Autorización de Consulta CIFIN / DataCrédito</div>
+  <div class="auth-box">
+    <p>Autorizo de manera voluntaria, irrevocable, expresa e informada a <strong>MAZKO S.A.S (NIT 891.902.805-6)</strong>, <strong>MASSY MOTORS KIA S.A.S (NIT 800.175.223-9)</strong> y <strong>MASSY MOTORS PREMIUM S.A.S (NIT 901.215.353-7)</strong>, para que consulten, soliciten, suministren, reporten, procesen y divulguen toda la información que se refiera a mi comportamiento crediticio, financiero, comercial, de servicios y de terceros países, a la Central de Información Financiera CIFIN y/o a cualquier otra entidad que administre una base de datos con los mismos fines.</p>
+    <br>
+    <p>Dicha autorización se extiende a la consulta y reporte de la información en las centrales de riesgo, para los efectos del Artículo 15 de la Constitución Política, la Ley 1266 de 2008 (Habeas Data), la Ley 1581 de 2012 y demás normas que regulen la materia.</p>
+    <br>
+    <p>Declaro que conozco que los datos consignados en esta solicitud serán incorporados en una base de datos cuyo responsable es la entidad mencionada, con la finalidad de gestionar la solicitud de crédito para la adquisición de vehículo y para los fines comerciales que se deriven de la relación contractual.</p>
+    <br>
+    <p>De igual manera, autorizo el tratamiento de mis datos personales conforme a la política de tratamiento de datos personales de las entidades mencionadas.</p>
+  </div>
+
+  <div class="form-grid">
+    <div class="form-group"><label>C.C. Solicitante</label><input type="text" id="ccFirmaSol"></div>
+    <div class="form-group"><label>C.C. Cónyuge (opcional)</label><input type="text" id="ccFirmaCon"></div>
+  </div>
+
+  <div class="sub-title">Firma del Solicitante</div>
+  <div class="sig-area">
+    <div class="sig-wrap">
+      <canvas id="sigSol" class="sig-canvas"></canvas>
+      <span class="sig-placeholder" id="phSol">Firme aquí</span>
+    </div>
+    <button class="btn-clear" onclick="clearSig('Sol')">🗑 Borrar firma</button>
+  </div>
+
+  <div class="sub-title">Firma del Cónyuge (opcional)</div>
+  <div class="sig-area">
+    <div class="sig-wrap">
+      <canvas id="sigCon" class="sig-canvas"></canvas>
+      <span class="sig-placeholder" id="phCon">Firme aquí</span>
+    </div>
+    <button class="btn-clear" onclick="clearSig('Con')">🗑 Borrar firma</button>
+  </div>
+
+  <div class="accept-row">
+    <input type="checkbox" id="aceptacion">
+    <label for="aceptacion">Declaro que conozco, entiendo y acepto el contenido de los documentos en todas y cada una de sus partes. Autorizo la consulta y reporte en centrales de riesgo.</label>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
+    <div style="display:flex;gap:12px">
+      <button class="btn btn-next" onclick="generarPDF()" style="background:#1a5276">📄 Generar PDF</button>
+      <button class="btn btn-submit" onclick="submitForm()">✅ Enviar Solicitud</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="icon">✅</div>
+    <h3>¡Solicitud Enviada!</h3>
+    <p>Su solicitud de crédito ha sido recibida exitosamente. Un asesor se comunicará con usted pronto.</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-next" onclick="generarPDF()" style="background:#1a5276">📄 Descargar PDF</button>
+      <button class="btn btn-next" onclick="document.getElementById('modalOverlay').classList.remove('show')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEBUG BUTTON FOR TESTING -->
+<button onclick="autoFill()" style="position:fixed;bottom:20px;left:20px;background:#444;color:#fff;border:none;padding:8px 12px;border-radius:4px;font-size:12px;cursor:pointer;z-index:9999;box-shadow:0 2px 5px rgba(0,0,0,0.3);">🔧 Auto-completar Datos (Test)</button>
+
+<script>
+/* ===== NAVIGATION ===== */
+let current=0;
+const panels=document.querySelectorAll('.panel');
+const steps=document.querySelectorAll('.p-step');
+
+function goTo(n){
+  if(n<0||n>=panels.length)return;
+  panels[current].classList.remove('active');
+  steps[current].classList.remove('active');
+  if(n>current)steps[current].classList.add('done');
+  current=n;
+  panels[current].classList.add('active');
+  steps[current].classList.remove('done');
+  steps[current].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function nextPanel(){goTo(current+1)}
+function prevPanel(){goTo(current-1)}
+
+/* ===== PILLS ===== */
+function selectedRadio(el){
+  el.parentElement.querySelectorAll('.pill').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function toggleCheck(el){el.classList.toggle('selected');el.classList.toggle('pill-check')}
+
+/* ===== CALC ===== */
+function calcFinanciar(){
+  const v=parseFloat(document.getElementById('valorVehiculo').value)||0;
+  const c=parseFloat(document.getElementById('cuotaInicial').value)||0;
+  document.getElementById('valorFinanciar').value=formatMoney(v-c);
+}
+function formatMoney(n){return'$ '+n.toLocaleString('es-CO')}
+
+function calcTotales(){
+  ['Deudor','Conyuge'].forEach(who=>{
+    let ti=0,te=0;
+    ['salario','comisiones','arriendos','otrosIng'].forEach(f=>{
+      ti+=parseFloat(document.getElementById(f+who)?.value)||0;
+    });
+    ['sostenimiento','prestamos','tcredito','arriendoEg'].forEach(f=>{
+      te+=parseFloat(document.getElementById(f+who)?.value)||0;
+    });
+    const tii=document.getElementById('totalIng'+who);
+    const tee=document.getElementById('totalEgr'+who);
+    if(tii)tii.value=formatMoney(ti);
+    if(tee)tee.value=formatMoney(te);
+  });
+}
+
+/* ===== SIGNATURE CANVAS ===== */
+let sigsInitialized = false;
+function initSig(id){
+  const canvas=document.getElementById('sig'+id);
+  const ctx=canvas.getContext('2d');
+  const ph=document.getElementById('ph'+id);
+  let drawing=false, signed=false;
+
+  function setup(){
+    const rect=canvas.parentElement.getBoundingClientRect();
+    if(rect.width===0) return;
+    const imgData = signed ? ctx.getImageData(0,0,canvas.width,canvas.height) : null;
+    canvas.width=rect.width;
+    canvas.height=160;
+    ctx.strokeStyle='#000';
+    ctx.lineWidth=2;
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+    if(imgData && signed) ctx.putImageData(imgData,0,0);
+  }
+  setup();
+
+  canvas._setup = setup;
+
+  function getPos(e){
+    const r=canvas.getBoundingClientRect();
+    const t=e.touches?e.touches[0]:e;
+    return{x:t.clientX-r.left,y:t.clientY-r.top};
+  }
+  function start(e){e.preventDefault();drawing=true;if(!signed){signed=true;ph.style.display='none';}const p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);}
+  function move(e){if(!drawing)return;e.preventDefault();const p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();}
+  function end(){drawing=false;}
+
+  canvas.addEventListener('mousedown',start);
+  canvas.addEventListener('mousemove',move);
+  canvas.addEventListener('mouseup',end);
+  canvas.addEventListener('mouseleave',end);
+  canvas.addEventListener('touchstart',start,{passive:false});
+  canvas.addEventListener('touchmove',move,{passive:false});
+  canvas.addEventListener('touchend',end);
+
+  canvas._clear=function(){ctx.clearRect(0,0,canvas.width,canvas.height);ph.style.display='';signed=false;};
+}
+
+function clearSig(id){document.getElementById('sig'+id)._clear();}
+
+document.addEventListener('DOMContentLoaded',function(){initSig('Sol');initSig('Con');});
+
+/* Re-init canvases when step 8 is shown */
+const origGoTo = goTo;
+goTo = function(n){
+  origGoTo(n);
+  if(n===7 && !sigsInitialized){
+    setTimeout(function(){
+      document.getElementById('sigSol')._setup();
+      document.getElementById('sigCon')._setup();
+      sigsInitialized=true;
+    },100);
+  }
+};
+
+/* ===== SUBMIT ===== */
+function submitForm(){
+  if(!document.getElementById('aceptacion').checked){
+    alert('Debe aceptar los términos y condiciones para enviar la solicitud.');
+    return;
+  }
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+/* ===== AUTOFILL FOR TESTING ===== */
+function autoFill(){
+  function setV(id,val){var e=document.getElementById(id);if(e)e.value=val;}
+  function setP(id,idx){var c=document.getElementById(id);if(c){var ps=c.querySelectorAll('.pill');if(ps[idx])selectedRadio(ps[idx]);}}
+
+  // Step 1
+  setV('fecha','2026-05-14');
+  setV('concesionario','Massy Motors Usados Sede Norte');
+  setV('noSolicitud','REQ-987654');
+  setV('asesor','Carlos Muñoz');
+  setV('cedulaAsesor','1144002233');
+  setP('tipoCredito',1); // Usado
+  setV('refVehiculo','Mazda CX-5');
+  setV('modeloAno','2023');
+  setP('usoVehiculo',0); // Particular
+  setV('valorVehiculo','120000000');
+  setV('cuotaInicial','40000000');
+  calcFinanciar();
+
+  // Step 2
+  setV('nombreSolicitante','Juan Fernando Herrera');
+  setP('tipoDocSol',0); // C.C.
+  setV('numDocSol','1020304050');
+  setV('fecNacSol','1985-08-20');
+  setV('fecExpSol','2005-09-10');
+  setP('estadoCivil',1); // Casado
+  setV('personasCargo','2');
+  setV('dirResidencia','Calle 123 # 45-67 Apto 802');
+  setV('barrio','Valle del Lili');
+  setV('ciudad','Cali');
+  setP('tipoVivienda',0); // Propia
+  setV('celularSol','3151234567');
+  setV('emailSol','juan.herrera@email.com');
+
+  // Step 3
+  setV('nombreConyuge','Maria Camila Rojas');
+  setP('tipoDocCon',0); // C.C.
+  setV('numDocCon','40506070');
+  setV('fecNacCon','1988-03-15');
+  setV('fecExpCon','2006-04-20');
+  setV('celConyuge','3109876543');
+  setV('emailConyuge','maria.rojas@email.com');
+
+  // Step 4
+  setP('tipoVinculacion',1); // Asalariado
+  setV('antiguedad','5 años');
+  setV('nombreEmpresa','Tech Solutions S.A.');
+  setV('cargo','Ingeniero de Software');
+  setV('profesion','Ingeniero de Sistemas');
+  var tc=document.getElementById('tipoContrato'); if(tc)tc.selectedIndex=1; // Indefinido
+  setV('actEconomica','Desarrollo de Software');
+  setV('dirEmpresa','Cra 100 # 11-20 Of 501');
+  setV('telEmpresa','6025551234');
+  setV('ciudadEmpresa','Cali');
+
+  // Step 5
+  setV('salarioDeudor','8500000');
+  setV('comisionesDeudor','500000');
+  setV('arriendosDeudor','1200000');
+  setV('otrosIngDeudor','0');
+  setV('salarioConyuge','5200000');
+  setV('comisionesConyuge','0');
+  setV('arriendosConyuge','0');
+  setV('otrosIngConyuge','300000');
+  calcTotales();
+
+  // Step 6 (Sarlaft, Patrimonio, Vehiculos)
+  setP('sarlaftExpuesto',1); // No
+  setP('sarlaftDineros',1); // No
+  setP('sarlaftMoneda',1); // No
+  
+  setP('tipoInmueble1',1); // Apto
+  setV('dirInmueble1','Carrera 80 # 12-34');
+  setV('valInmueble1','250000000');
+  setV('entInmueble1','Bancolombia');
+  
+  setV('refVeh1','Kia Picanto');
+  setV('modVeh1','2020');
+  setV('plaVeh1','ABC123');
+  setV('valVeh1','35000000');
+
+  // Step 7 (Refs)
+  setV('refPNombre1','Carlos Herrera'); setV('refPCel1','3123456789'); setV('refPPar1','Hermano');
+  setV('refPNombre2','Ana Gomez'); setV('refPCel2','3187654321'); setV('refPPar2','Prima');
+  setV('refCNombre1','Ferreteria La 14'); setV('refCNit1','900123456-7'); setV('refCCel1','3001112233'); setV('refCAnt1','3 años');
+  setV('refCNombre2','Distribuidora XYZ'); setV('refCNit2','800987654-3'); setV('refCCel2','3112223344'); setV('refCAnt2','5 años');
+
+  // Step 8
+  var chk=document.getElementById('aceptacion'); if(chk)chk.checked=true;
+  setV('ccFirmaSol','1020304050');
+  setV('ccFirmaCon','40506070');
+
+  alert('¡Formulario auto-completado con datos de prueba! Navega al Paso 8 y genera el PDF.');
+}
+</script>
+<script src="pdf-generator.js"></script>
+</body>
+</html>
+
