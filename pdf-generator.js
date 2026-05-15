@@ -246,50 +246,40 @@ async function fillOriginalPDF(){
     setTxt('valor comercial vehiculo 2', gv('valVeh2'));
 
     // --- Firmas (imágenes) ---
+    // Usamos siempre la última página para dibujar firmas (evita error PDFRef)
+    const pages = pdfDoc.getPages();
+    const lastPage = pages[pages.length >= 2 ? pages.length - 1 : 0];
+
     try {
-      const fieldDeudor = form.getTextField('firma deudor');
-      if(fieldDeudor) {
-        const widgets = fieldDeudor.acroField.getWidgets();
-        if(widgets && widgets.length > 0) {
-          const rect = widgets[0].getRectangle();
-          const pageRef = widgets[0].P();
-          const pages = pdfDoc.getPages();
-          let targetPage = pages[pages.length - 1]; // fallback
-          for(const p of pages) {
-            if(p.ref === pageRef) { targetPage = p; break; }
+      // Intentar obtener rect del campo firma deudor
+      let sigRect = { x: 50, y: 90, width: 200, height: 50 }; // coordenadas por defecto
+      try {
+        const fieldDeudor = form.getTextField('firma deudor');
+        if(fieldDeudor) {
+          const widgets = fieldDeudor.acroField.getWidgets();
+          if(widgets && widgets.length > 0) {
+            const r = widgets[0].getRectangle();
+            if(r && r.width > 0) sigRect = r;
           }
-          
-          const sigSolData = document.getElementById('sigSol').toDataURL('image/png');
-          const pngImage = await pdfDoc.embedPng(sigSolData);
-          targetPage.drawImage(pngImage, {
-            x: rect.x,
-            y: rect.y,
-            width: rect.width,
-            height: rect.height
-          });
-          setTxt('cedula deudor', gv('ccFirmaSol'));
         }
-      }
+      } catch(fe) { console.warn('Campo firma deudor no encontrado, usando coords por defecto', fe); }
+
+      const sigSolData = document.getElementById('sigSol').toDataURL('image/png');
+      const pngImage = await pdfDoc.embedPng(sigSolData);
+      lastPage.drawImage(pngImage, { x: sigRect.x, y: sigRect.y, width: sigRect.width, height: sigRect.height });
+      setTxt('cedula deudor', gv('ccFirmaSol'));
     } catch(e) { console.error("No se pudo pegar firma solicitante", e); }
 
     try {
       if(gv('ccFirmaCon')) {
-        const pages = pdfDoc.getPages();
-        const lastPage = pages[pages.length - 1];
         const sigConData = document.getElementById('sigCon').toDataURL('image/png');
         const pngImage2 = await pdfDoc.embedPng(sigConData);
-        // Dibujamos arbitrariamente a la derecha de la del deudor (no hay campo para firma cónyuge)
-        lastPage.drawImage(pngImage2, {
-          x: 350,
-          y: 100, // Coordenadas aproximadas si no hay campo
-          width: 150,
-          height: 40
-        });
+        lastPage.drawImage(pngImage2, { x: 350, y: 90, width: 180, height: 50 });
       }
     } catch(e) { console.error("No se pudo pegar firma cónyuge", e); }
 
-    // Aplanar el formulario para que no se pueda modificar
-    form.flatten();
+    // Aplanar el formulario (en try/catch independiente para no abortar el guardado)
+    try { form.flatten(); } catch(fe) { console.warn('form.flatten() con advertencias:', fe); }
     
     const pdfBytes = await pdfDoc.save();
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
