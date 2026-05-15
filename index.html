@@ -450,7 +450,7 @@ input.field-error,select.field-error,textarea.field-error{
 
   <div class="btn-row">
     <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
-    <button class="btn btn-next" onclick="generarPDF()" style="background:#1a5276">📄 Generar PDF</button>
+    <button class="btn btn-next" onclick="validateAndGeneratePDF()" style="background:#1a5276">📄 Generar PDF</button>
   </div>
 </div>
 
@@ -495,6 +495,13 @@ function nextPanel(){
   goTo(current+1);
 }
 function prevPanel(){ clearValidationErrors(); goTo(current-1); }
+
+function validateAndGeneratePDF(){
+  var result = validateStep(current); // validates step 8 (current=7)
+  if(!result.valid){ showValidationToast(result.errors); return; }
+  clearValidationErrors();
+  if(typeof generarPDF === 'function') generarPDF();
+}
 
 /* ===== VALIDATION ===== */
 function chkField(id, label, errors){
@@ -549,6 +556,34 @@ function validateStep(n){
     chkPill('sarlaftDineros','¿Maneja dineros públicos?',errors);
     chkPill('sarlaftMoneda','¿Operaciones moneda extranjera?',errors);
   }
+  if(n===6){
+    chkField('refPNombre1','Nombre Ref. Personal 1',errors);
+    chkField('refPCel1','Celular Ref. Personal 1',errors);
+    chkField('refPPar1','Parentesco Ref. Personal 1',errors);
+    chkField('refPNombre2','Nombre Ref. Personal 2',errors);
+    chkField('refPCel2','Celular Ref. Personal 2',errors);
+    chkField('refPPar2','Parentesco Ref. Personal 2',errors);
+  }
+  if(n===7){
+    chkField('ccFirmaSol','C.C. Solicitante',errors);
+    var canvas=document.getElementById('sigSol');
+    var ph=document.getElementById('phSol');
+    if(ph && ph.style.display !== 'none'){
+      errors.push('Firma del Solicitante');
+      if(canvas){ canvas.style.borderColor='#C8102E'; canvas.style.backgroundColor='rgba(200,16,46,.03)'; }
+    } else if(canvas) {
+      canvas.style.borderColor='#ccc'; canvas.style.backgroundColor='#fafafa';
+    }
+    var cb=document.getElementById('aceptacion');
+    if(cb && !cb.checked){
+      errors.push('Aceptación de Términos y Condiciones');
+      cb.parentElement.style.outline='2px solid #C8102E';
+      cb.parentElement.style.outlineOffset='2px';
+      cb.parentElement.style.borderRadius='var(--radius)';
+    } else if(cb && cb.parentElement) {
+      cb.parentElement.style.outline='none';
+    }
+  }
   return {valid: errors.length===0, errors: errors};
 }
 function showValidationToast(errors){
@@ -566,6 +601,10 @@ function showValidationToast(errors){
 function clearValidationErrors(){
   document.querySelectorAll('.field-error').forEach(function(el){el.classList.remove('field-error');});
   document.querySelectorAll('.pill-group-error').forEach(function(el){el.classList.remove('pill-group-error');});
+  var canvas=document.getElementById('sigSol');
+  if(canvas){ canvas.style.borderColor='#ccc'; canvas.style.backgroundColor='#fafafa'; }
+  var cb=document.getElementById('aceptacion');
+  if(cb && cb.parentElement) cb.parentElement.style.outline='none';
   var t=document.getElementById('val-toast'); if(t) t.remove();
 }
 
