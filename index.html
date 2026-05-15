@@ -134,7 +134,7 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
         <option>Massy Motors Usados Sede Sur</option>
       </select>
     </div>
-    <div class="form-group"><label>No. de Solicitud</label><input type="text" id="noSolicitud"></div>
+
     <div class="form-group"><label>Asesor</label><input type="text" id="asesor"></div>
     <div class="form-group"><label>Cédula Asesor</label><input type="text" id="cedulaAsesor"></div>
   </div>
@@ -270,7 +270,7 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
   </div>
   <small style="font-size:10px;color:#999;display:block;margin-top:-8px;margin-bottom:12px">* Cámara de Comercio y RUT aplican solo si es Independiente o Profesional Independiente</small>
   <div class="form-grid">
-    <div class="form-group full"><label>Dirección Empresa</label><input type="text" id="dirEmpresa"></div>
+    <div class="form-group full"><label>Dirección Empresa</label><input type="text" id="dirEmpresa"><small style="font-size:11px;color:#777;margin-top:4px;display:block">* Dirección de la empresa donde labora o establecimiento comercial si es independiente.</small></div>
     <div class="form-group"><label>Teléfono Empresa</label><input type="tel" id="telEmpresa"></div>
     <div class="form-group"><label>Ciudad</label><input type="text" id="ciudadEmpresa"></div>
   </div>
@@ -287,12 +287,12 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
   <div class="sub-title">Ingresos Mensuales</div>
   <div style="overflow-x:auto">
   <table class="fin-table">
-    <tr><th>Concepto</th><th>Deudor</th><th>Cónyuge</th></tr>
-    <tr><td>Salario</td><td><input type="number" id="salarioDeudor" oninput="calcTotales()"></td><td><input type="number" id="salarioConyuge" oninput="calcTotales()"></td></tr>
-    <tr><td>Comisiones</td><td><input type="number" id="comisionesDeudor" oninput="calcTotales()"></td><td><input type="number" id="comisionesConyuge" oninput="calcTotales()"></td></tr>
-    <tr><td>Arriendos</td><td><input type="number" id="arriendosDeudor" oninput="calcTotales()"></td><td><input type="number" id="arriendosConyuge" oninput="calcTotales()"></td></tr>
-    <tr><td>Otros</td><td><input type="number" id="otrosIngDeudor" oninput="calcTotales()"></td><td><input type="number" id="otrosIngConyuge" oninput="calcTotales()"></td></tr>
-    <tr><td><strong>TOTAL INGRESOS</strong></td><td><input type="text" id="totalIngDeudor" readonly></td><td><input type="text" id="totalIngConyuge" readonly></td></tr>
+    <tr><th>Concepto</th><th>Deudor</th></tr>
+    <tr><td>Salario</td><td><input type="number" id="salarioDeudor" oninput="calcTotales()"></td></tr>
+    <tr><td>Comisiones</td><td><input type="number" id="comisionesDeudor" oninput="calcTotales()"></td></tr>
+    <tr><td>Arriendos</td><td><input type="number" id="arriendosDeudor" oninput="calcTotales()"></td></tr>
+    <tr><td>Otros</td><td><input type="number" id="otrosIngDeudor" oninput="calcTotales()"></td></tr>
+    <tr><td><strong>TOTAL INGRESOS</strong></td><td><input type="text" id="totalIngDeudor" readonly></td></tr>
   </table>
   </div>
 
@@ -324,20 +324,6 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
   </div>
 
   <div class="sub-title">Origen de Fondos</div>
-  <div class="pills" style="margin-bottom:12px">
-    <div class="pill pill-check" onclick="toggleCheck(this)">Salario</div>
-    <div class="pill pill-check" onclick="toggleCheck(this)">Honorarios</div>
-    <div class="pill pill-check" onclick="toggleCheck(this)">Arrendamientos</div>
-    <div class="pill pill-check" onclick="toggleCheck(this)">Comisiones</div>
-    <div class="pill pill-check" onclick="toggleCheck(this)">Herencia</div>
-    <div class="pill pill-check" onclick="toggleCheck(this)">Rendimientos Financieros</div>
-    <div class="pill pill-check" onclick="toggleCheck(this)">Venta Propiedad</div>
-    <div class="pill pill-check" onclick="toggleCheck(this)">Pensión Laboral</div>
-    <div class="pill pill-check" onclick="toggleCheck(this)">Otros</div>
-  </div>
-  <div class="form-grid">
-    <div class="form-group full"><label>Detalle Otros</label><input type="text" id="detalleOtrosFondos"></div>
-  </div>
 
   <div class="btn-row">
     <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
@@ -348,7 +334,7 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
   <h2 class="section-title">Paso 6 — Patrimonio Demostrado</h2>
   <div class="sub-title">Inmuebles</div>
   <div style="overflow-x:auto"><table class="fin-table">
-    <tr><th>Tipo</th><th>Dirección</th><th>Valor Comercial ($)</th><th>Entidad</th></tr>
+    <tr><th>Tipo</th><th>Dirección</th><th>Valor Comercial ($)</th><th>Entidad (Hipoteca)</th></tr>
     <tr>
       <td><div class="pills" id="tipoInmueble1" style="gap:4px"><div class="pill" style="padding:4px 10px;font-size:11px" onclick="selectedRadio(this)">Casa</div><div class="pill" style="padding:4px 10px;font-size:11px" onclick="selectedRadio(this)">Apto</div><div class="pill" style="padding:4px 10px;font-size:11px" onclick="selectedRadio(this)">Otro</div></div></td>
       <td><input type="text" id="dirInmueble1"></td><td><input type="number" id="valInmueble1"></td><td><input type="text" id="entInmueble1"></td>
@@ -387,20 +373,20 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
     <div class="form-group"><label>Parentesco</label><input type="text" id="refPPar2"></div>
   </div>
 
-  <div class="sub-title">Referencias Comerciales</div>
+  <div class="sub-title">Referencias Comerciales <span style="font-size:12px;font-weight:400;color:var(--text-dim);text-transform:none;letter-spacing:0;font-family:'Barlow',sans-serif">— Diligenciar si es independiente o profesional independiente</span></div>
   <p class="note">Referencia 1</p>
   <div class="form-grid">
     <div class="form-group"><label>Nombre</label><input type="text" id="refCNombre1"></div>
     <div class="form-group"><label>NIT</label><input type="text" id="refCNit1"></div>
     <div class="form-group"><label>Celular</label><input type="tel" id="refCCel1"></div>
-    <div class="form-group"><label>Antigüedad</label><input type="text" id="refCAnt1"></div>
+    <div class="form-group"><label>Antigüedad</label><input type="text" id="refCAnt1"><small style="font-size:11px;color:#777;margin-top:4px;display:block">Tiempo ejerciendo la actividad</small></div>
   </div>
   <p class="note" style="margin-top:16px">Referencia 2</p>
   <div class="form-grid">
     <div class="form-group"><label>Nombre</label><input type="text" id="refCNombre2"></div>
     <div class="form-group"><label>NIT</label><input type="text" id="refCNit2"></div>
     <div class="form-group"><label>Celular</label><input type="tel" id="refCCel2"></div>
-    <div class="form-group"><label>Antigüedad</label><input type="text" id="refCAnt2"></div>
+    <div class="form-group"><label>Antigüedad</label><input type="text" id="refCAnt2"><small style="font-size:11px;color:#777;margin-top:4px;display:block">Tiempo ejerciendo la actividad</small></div>
   </div>
 
   <div class="btn-row">
@@ -453,10 +439,7 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
 
   <div class="btn-row">
     <button class="btn btn-prev" onclick="prevPanel()">← Anterior</button>
-    <div style="display:flex;gap:12px">
-      <button class="btn btn-next" onclick="generarPDF()" style="background:#1a5276">📄 Generar PDF</button>
-      <button class="btn btn-submit" onclick="submitForm()">✅ Enviar Solicitud</button>
-    </div>
+    <button class="btn btn-next" onclick="generarPDF()" style="background:#1a5276">📄 Generar PDF</button>
   </div>
 </div>
 
