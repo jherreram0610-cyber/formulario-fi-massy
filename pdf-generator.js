@@ -3,26 +3,40 @@ function gv(id){return document.getElementById(id)?.value||'';}
 function getPill(cid){var c=document.getElementById(cid);if(!c)return '';var s=c.querySelector('.pill.selected');return s?s.textContent.trim():'';}
 function getSelect(id){var e=document.getElementById(id);return e&&e.selectedIndex>0?e.options[e.selectedIndex].text:'';}
 
+function showPdfStatus(msg, color){
+  var existing = document.getElementById('pdf-status-msg');
+  if(existing) existing.remove();
+  var div = document.createElement('div');
+  div.id = 'pdf-status-msg';
+  div.style.cssText = 'position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:'+(color||'#1a5276')+';color:#fff;padding:12px 24px;border-radius:8px;font-family:Barlow,sans-serif;font-size:14px;z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.25);text-align:center;max-width:90vw';
+  div.textContent = msg;
+  document.body.appendChild(div);
+  return div;
+}
+
 function generarPDF(){
   console.log('Iniciando pdf-lib generator');
   if(window.PDFLib){
     fillOriginalPDF();
     return;
   }
+  var statusEl = showPdfStatus('⏳ Cargando módulo PDF, espere un momento...');
   var s=document.createElement('script');
   s.src='https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
   s.onload=function(){
     fillOriginalPDF();
   };
   s.onerror=function(){
-    alert('Error cargando pdf-lib');
+    statusEl.remove();
+    showPdfStatus('❌ Error cargando pdf-lib. Verifique su conexión.', '#c0392b');
+    setTimeout(function(){ var e=document.getElementById('pdf-status-msg'); if(e)e.remove(); }, 5000);
   };
   document.head.appendChild(s);
 }
 
 async function fillOriginalPDF(){
   try {
-    alert('Cargando formulario PDF. Esto puede tardar unos segundos...');
+    var statusEl = showPdfStatus('⏳ Generando PDF, espere un momento...');
     
     const { PDFDocument } = window.PDFLib;
     
@@ -281,10 +295,25 @@ async function fillOriginalPDF(){
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     const blobUrl = URL.createObjectURL(blob);
     
-    window.open(blobUrl, '_blank');
+    // Descarga directa sin popup — compatible con bloqueadores de elementos emergentes
+    statusEl.remove();
+    var a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = 'Solicitud-Credito-Massy-Motors.pdf';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    }, 3000);
+    showPdfStatus('✅ PDF generado. Revise sus descargas.', '#1a7a3a');
+    setTimeout(function(){ var e=document.getElementById('pdf-status-msg'); if(e)e.remove(); }, 6000);
     
   } catch(err) {
+    if(typeof statusEl !== 'undefined' && statusEl) try { statusEl.remove(); } catch(x){}
     console.error(err);
-    alert('Error al llenar la plantilla PDF: ' + err.message);
+    showPdfStatus('❌ Error al generar PDF: ' + err.message, '#c0392b');
+    setTimeout(function(){ var e=document.getElementById('pdf-status-msg'); if(e)e.remove(); }, 8000);
   }
 }
