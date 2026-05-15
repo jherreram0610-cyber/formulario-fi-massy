@@ -278,8 +278,45 @@ async function fillOriginalPDF(){
       }
     } catch(e) { console.error("No se pudo pegar firma cónyuge", e); }
 
-    // Aplanar el formulario (en try/catch independiente para no abortar el guardado)
-    try { form.flatten(); } catch(fe) { console.warn('form.flatten() con advertencias:', fe); }
+    // ── APLANAR EL FORMULARIO (hacer PDF no editable) ────────────────────
+    // pdf-lib tiene un bug con ciertos PDFs donde form.flatten() no puede
+    // resolver la referencia de página de cada widget (error PDFRef).
+    // Solución: parchamos manualmente la entrada "P" de cada anotación
+    // con la referencia correcta de su página, luego aplanamos.
+    try {
+      const { PDFName } = window.PDFLib;
+      const allPages = pdfDoc.getPages();
+
+      // Paso 1: vincular cada widget a su página correcta
+      allPages.forEach(function(page) {
+        try {
+          const annotsRef = page.node.get(PDFName.of('Annots'));
+          if (!annotsRef) return;
+          const annots = pdfDoc.context.lookup(annotsRef);
+          if (!annots || !annots.asArray) return;
+          annots.asArray().forEach(function(annotRef) {
+            try {
+              const annot = pdfDoc.context.lookup(annotRef);
+              if (annot && annot.set && annot.has) {
+                annot.set(PDFName.of('P'), page.ref);
+              }
+            } catch(e) {}
+          });
+        } catch(e) {}
+      });
+
+      // Paso 2: aplanar — ahora puede resolver todas las referencias
+      form.flatten();
+
+    } catch(flatErr) {
+      console.warn('form.flatten() falló, aplicando read-only por campo:', flatErr);
+      // Fallback: marcar cada campo como solo lectura
+      try {
+        form.getFields().forEach(function(field) {
+          try { field.enableReadOnly(); } catch(e) {}
+        });
+      } catch(e2) { console.warn('Fallback read-only también falló:', e2); }
+    }
     
     const pdfBytes = await pdfDoc.save();
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
