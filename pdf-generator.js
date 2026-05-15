@@ -284,16 +284,12 @@ async function fillOriginalPDF(){
       }
     } catch(e) { console.error("No se pudo pegar firma cónyuge", e); }
 
-    // ── APLANAR EL FORMULARIO (hacer PDF no editable) ────────────────────
-    // pdf-lib tiene un bug con ciertos PDFs donde form.flatten() no puede
-    // resolver la referencia de página de cada widget (error PDFRef).
-    // Solución: parchamos manualmente la entrada "P" de cada anotación
-    // con la referencia correcta de su página, luego aplanamos.
+    // ── PDF LIMPIO (aspecto de impresión, sin recuadros de formulario) ─────
     try {
-      const { PDFName } = window.PDFLib;
+      const { PDFName, StandardFonts } = window.PDFLib;
       const allPages = pdfDoc.getPages();
 
-      // Paso 1: vincular cada widget a su página correcta
+      // Paso 1: vincular cada widget a su página (fix PDFRef bug)
       allPages.forEach(function(page) {
         try {
           const annotsRef = page.node.get(PDFName.of('Annots'));
@@ -303,25 +299,57 @@ async function fillOriginalPDF(){
           annots.asArray().forEach(function(annotRef) {
             try {
               const annot = pdfDoc.context.lookup(annotRef);
-              if (annot && annot.set && annot.has) {
-                annot.set(PDFName.of('P'), page.ref);
+              if (annot && annot.set) annot.set(PDFName.of('P'), page.ref);
+            } catch(e) {}
+          });
+        } catch(e) {}
+      });
+
+      // Paso 2: eliminar bordes, fondos y AP streams de cada widget
+      allPages.forEach(function(page) {
+        try {
+          const annotsRef = page.node.get(PDFName.of('Annots'));
+          if (!annotsRef) return;
+          const annots = pdfDoc.context.lookup(annotsRef);
+          if (!annots || !annots.asArray) return;
+          annots.asArray().forEach(function(annotRef) {
+            try {
+              const annot = pdfDoc.context.lookup(annotRef);
+              if (!annot || !annot.set) return;
+              // Borrar appearance stream existente (tiene los bordes del PDF original)
+              annot.delete(PDFName.of('AP'));
+              // Border Style: ancho 0
+              annot.set(PDFName.of('BS'), pdfDoc.context.obj({ W: 0, S: 'S' }));
+              // MK: sin color de borde ni fondo
+              const mkRef = annot.get(PDFName.of('MK'));
+              if (mkRef) {
+                const mk = pdfDoc.context.lookup(mkRef);
+                if (mk && mk.delete) {
+                  mk.delete(PDFName.of('BC')); // border color
+                  mk.delete(PDFName.of('BG')); // background color
+                }
+              } else {
+                annot.set(PDFName.of('MK'), pdfDoc.context.obj({}));
               }
             } catch(e) {}
           });
         } catch(e) {}
       });
 
-      // Paso 2: aplanar — ahora puede resolver todas las referencias
+      // Paso 3: regenerar appearances sin bordes usando Helvetica
+      try {
+        const helv = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        form.updateFieldAppearances(helv);
+      } catch(ue) { console.warn('updateFieldAppearances:', ue); }
+
+      // Paso 4: aplanar → texto estático, PDF no editable
       form.flatten();
 
     } catch(flatErr) {
-      console.warn('form.flatten() falló, aplicando read-only por campo:', flatErr);
-      // Fallback: marcar cada campo como solo lectura
+      console.warn('Flatten falló, aplicando read-only:', flatErr);
       try {
-        form.getFields().forEach(function(field) {
-          try { field.enableReadOnly(); } catch(e) {}
-        });
-      } catch(e2) { console.warn('Fallback read-only también falló:', e2); }
+        form.getFields().forEach(function(f) { try { f.enableReadOnly(); } catch(e) {} });
+      } catch(e2) {}
     }
     
     const pdfBytes = await pdfDoc.save();
